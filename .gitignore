@@ -23,9 +23,6 @@ obj/
 # Logs
 *.log
 
-# Docker
-**/Dockerfile*
-**/.dockerignore
 
 # OS generated files
 Thumbs.db
