@@ -1,0 +1,19 @@
+steps:
+
+  - name: Log in to Azure
+    uses: azure/login@v1
+    with:
+      creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+  - name: Build and deploy Container App
+    uses: azure/container-apps-deploy-action@v1
+    with:
+      appSourcePath: ${{ github.workspace }}/src
+      acrName: contreg4grind
+      containerAppName: rs-cacentral-grind
+      resourceGroup: rs-cacentral-grind
+      environmentVariables: |
+        CosmosDb__Endpoint=${{ secrets.COSMOSDB_ENDPOINT }}
+        CosmosDb__Key=${{ secrets.COSMOSDB_KEY }}
+        CosmosDb__DatabaseId=${{ secrets.COSMOSDB_DATABASEID }}
+        CosmosDb__ContainerId=${{ secrets.COSMOSDB_CONTAINERID }}
