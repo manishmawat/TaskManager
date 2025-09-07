@@ -1,0 +1,74 @@
+@page "/"
+@inject TaskManager.Web.Services.TaskService TaskService
+
+@using Microsoft.AspNetCore.Components.Web
+<PageTitle>Tasks</PageTitle>
+
+<h1>Tasks</h1>
+
+@if (tasks == null)
+{
+    <p>Loading...</p>
+}
+else if (tasks.Count == 0)
+{
+    <p>No tasks found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in tasks)
+            {
+                <tr>
+                    <td>@task.Title</td>
+                    <td>@task.Description</td>
+                    <td>@task.Status</td>
+                    <td>@task.DueDate?.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <button @onclick="() => EditTask(task.Id)">Edit</button>
+                        <button @onclick="() => DeleteTask(task.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<button @onclick="CreateTask">Create New Task</button>
+
+@inject NavigationManager Navigation
+
+@code {
+    private List<TaskItem> tasks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        tasks = await TaskService.GetTasksAsync();
+    }
+
+    private void CreateTask()
+    {
+        Navigation.NavigateTo("/create");
+    }
+
+    private void EditTask(string id)
+    {
+        Navigation.NavigateTo($"/edit/{id}");
+    }
+
+    private async Task DeleteTask(string id)
+    {
+        await TaskService.DeleteTaskAsync(id);
+        tasks = await TaskService.GetTasksAsync();
+    }
+}

@@ -1,0 +1,45 @@
+@page "/create"
+@inject TaskManager.Web.Services.TaskService TaskService
+@using Microsoft.AspNetCore.Components.Forms
+@using TaskManager.Web.Models
+
+<h1>Create Task</h1>
+
+<EditForm Model="task" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div>
+        <label>Title:</label>
+        <InputText @bind-Value="task.Title" />
+    </div>
+    <div>
+        <label>Description:</label>
+        <InputText @bind-Value="task.Description" />
+    </div>
+    <div>
+        <label>Status:</label>
+        <InputSelect @bind-Value="task.Status">
+            @foreach (var status in Enum.GetValues(typeof(TaskManager.Web.Models.TaskStatus)))
+            {
+                <option value="@status">@status</option>
+            }
+        </InputSelect>
+    </div>
+    <div>
+        <label>Due Date:</label>
+        <InputDate @bind-Value="task.DueDate" />
+    </div>
+    <button type="submit">Create</button>
+</EditForm>
+
+@inject NavigationManager Navigation
+
+@code {
+    private TaskItem task = new TaskItem();
+
+    private async Task HandleValidSubmit()
+    {
+        await TaskService.CreateTaskAsync(task);
+        Navigation.NavigateTo("/");
+    }
+}

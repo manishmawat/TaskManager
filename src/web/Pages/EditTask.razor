@@ -1,0 +1,57 @@
+@page "/edit/{Id}"
+@inject TaskManager.Web.Services.TaskService TaskService
+@using TaskManager.Web.Models
+
+<h1>Edit Task</h1>
+
+@if (task == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <EditForm Model="task" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div>
+            <label>Title:</label>
+            <InputText @bind-Value="task.Title" />
+        </div>
+        <div>
+            <label>Description:</label>
+            <InputText @bind-Value="task.Description" />
+        </div>
+        <div>
+            <label>Status:</label>
+            <InputSelect @bind-Value="task.Status">
+                @foreach (var status in Enum.GetValues(typeof(TaskManager.Web.Models.TaskStatus)))
+                {
+                    <option value="@status">@status</option>
+                }
+            </InputSelect>
+        </div>
+        <div>
+            <label>Due Date:</label>
+            <InputDate @bind-Value="task.DueDate" />
+        </div>
+        <button type="submit">Save</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public string Id { get; set; }
+    private TaskItem task;
+
+    protected override async Task OnInitializedAsync()
+    {
+        task = await TaskService.GetTaskAsync(Id);
+    }
+
+    @inject NavigationManager Navigation
+
+    private async Task HandleValidSubmit()
+    {
+        await TaskService.UpdateTaskAsync(Id, task);
+        Navigation.NavigateTo("/");
+    }
+}
