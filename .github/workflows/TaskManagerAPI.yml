@@ -21,7 +21,7 @@ jobs:
 
       - name: Build and tag Docker image
         run: |
-          docker build . --file src/api/Dockerfile --tag ${{ secrets.ACR_LOGIN_SERVER }}/taskmanager-api:latest
+          docker build --file src/api/Dockerfile . --tag ${{ secrets.ACR_LOGIN_SERVER }}/taskmanager-api:latest
 
       - name: Push Docker image to ACR
         run: |
