@@ -4,10 +4,10 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY [".", "/src/api/"]
-WORKDIR "/src/api"
+COPY . .
+WORKDIR /src/api
 RUN dotnet restore "TaskManager.API.csproj"
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish "TaskManager.API.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
